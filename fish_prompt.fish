@@ -1,6 +1,6 @@
-function _pwd_with_tilde
-  echo $PWD | sed 's|^'$HOME'\(.*\)$|~\1|'
-end
+# function _pwd_with_tilde
+#   echo $PWD | sed 's|^'$HOME'\(.*\)$|~\1|'
+# end
 
 function _in_git_directory
   git rev-parse --git-dir > /dev/null 2>&1
@@ -29,6 +29,11 @@ function _git_ahead_of_upstream
   test (git rev-list --left-only --count HEAD...@"{u}" ^ /dev/null) -gt 0
 end
 
+function _git_dirty
+  set -l is_git_dirty (command git status --porcelain --ignore-submodules ^/dev/null)
+  test -n "$is_git_dirty"
+end
+
 function _git_upstream_status
   set -l arrows
 
@@ -43,6 +48,16 @@ function _git_upstream_status
   end
 
   echo $arrows
+end
+
+function _git_status
+  set -l asterisk
+
+  if _git_dirty
+    set asterisk "$asterisk*"
+  end
+
+  echo $asterisk
 end
 
 function _print_in_color
@@ -65,10 +80,11 @@ end
 function fish_prompt
   set -l last_status $status
 
-  _print_in_color "\n"(_pwd_with_tilde) blue
+  _print_in_color "\n"(prompt_pwd) blue
 
   if _in_git_directory
-    _print_in_color " "(_git_branch_name_or_revision) 242
+    _print_in_color " "(_git_branch_name_or_revision) aaa
+    _print_in_color " "(_git_status) FCBC47
     _print_in_color " "(_git_upstream_status) cyan
   end
 
