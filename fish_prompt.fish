@@ -1,6 +1,4 @@
-# function _pwd_with_tilde
-#   echo $PWD | sed 's|^'$HOME'\(.*\)$|~\1|'
-# end
+set fish_color_command green
 
 function _in_git_directory
   git rev-parse --git-dir > /dev/null 2>&1
