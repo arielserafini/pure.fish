@@ -1,4 +1,5 @@
 set fish_color_command green
+set fish_prompt_pwd_dir_length 0
 
 function _in_git_directory
   git rev-parse --git-dir > /dev/null 2>&1
