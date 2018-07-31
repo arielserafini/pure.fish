@@ -4,6 +4,10 @@ set fish_color_command green
 # Show un-truncated directory names in prompt
 set fish_prompt_pwd_dir_length 0
 
+#Prompt characters
+set __fish_prompt_char_default '❯'
+set __fish_prompt_char_vi_mode '❮'
+
 # Git prompt
 set __fish_git_prompt_showdirtystate 'yes'
 set __fish_git_prompt_showupstream 'yes'
@@ -38,8 +42,26 @@ function _prompt_color_for_status
   end
 end
 
+function prompt_mode_char
+  if test "$fish_key_bindings" = "fish_vi_key_bindings"
+    switch $fish_bind_mode
+      case default
+        echo $__fish_prompt_char_vi_mode
+      case insert
+        echo $__fish_prompt_char_default
+      case replace_one
+        echo $__fish_prompt_char_vi_mode
+      case visual
+        echo $__fish_prompt_char_vi_mode
+    end
+  else
+    echo $__fish_prompt_char_default
+  end
+end
+
 function fish_prompt
   set -l last_status $status
+  set -l prompt_char (prompt_mode_char)
 
   printf "\n"
 
@@ -49,5 +71,5 @@ function fish_prompt
 
   printf "\n"
 
-  _print_in_color "❯ " (_prompt_color_for_status $last_status)
+  _print_in_color "$prompt_char " (_prompt_color_for_status $last_status)
 end
